@@ -1,0 +1,51 @@
+body {
+	margin: 20px 0px 20px 0px;
+}
+
+.container {
+
+}
+
+.header {
+	height: 10vh;
+}
+
+.header h1 {
+	margin:0px;
+	font-size: 6vh;
+	line-height: 0px;
+	padding-bottom:40px;
+}
+
+#clock {
+	text-align: right;
+}
+
+#addTitle {
+	float: left;
+}
+
+#hamburger {
+	text-align: right;
+}
+
+label {
+	margin-top: 20px;
+}
+
+button {
+	margin-top: 20px;
+}
+
+#newTrainSchedule {
+	visibility: hidden;
+	height: 0px;
+}
+
+.newTrainInput {
+	padding:0px;
+}
+
+#newTrain {
+	text-align: right;
+}
