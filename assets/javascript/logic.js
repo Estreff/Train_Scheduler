@@ -12,81 +12,121 @@ $(function(){
 
   	firebase.initializeApp(config);
 
-	firebase.database().ref().on('child_added',function(snapshot){
+  	var database = firebase.database();
+
+	database.ref().on('child_added',function(snapshot){
 		var tr = $('<tr>')
 		$('#schedule').append(tr);
-		tr.append('<td>' + snapshot.val().trainName +'</td>');
-		tr.append('<td>' + snapshot.val().destination +'</td>');
-		tr.append('<td>' + snapshot.val().startTime +'</td>');
-		tr.append('<td>' + snapshot.val().trips +'</td>');
-		tr.append('<td>' + snapshot.val().frequency +'</td>');
-	})
+		tr.append('<td id = "train">' + snapshot.val().trainName +'</td>');
+		tr.append('<td id = "destination">' + snapshot.val().destination +'</td>');
+		tr.append('<td id = "startTime">' + snapshot.val().startTime +'</td>');
+		tr.append('<td id = "frequency">' + snapshot.val().frequency +'</td>');
+		// tr.append('<td>' + snapshot.val().trainArrivals[0] +'</td>');
+
+
+		for(var i = 0; i < snapshot.val().trainArrivals.length; i++) {
+			if(snapshot.val().trainArrivals[i] > (searchTime)) {
+				var nextArrival = snapshot.val().trainArrivals[i];
+				tr.append('<td id = "nextArrival">' + snapshot.val().trainArrivals[i] +'</td>');
+				
+				break;		
+			}
+		}
+
+		// var difference = moment(currentTime) - moment(nextArrival);
+		// console.log(difference);			
+
+		
+				
+	});
+
 
   	var trainName = "";
   	var destination = "";
   	var startTime;
+  	var trainTime;
   	var trips = 0;
   	var	frequency = 0;
+	var trainArrivals = []
 	
 	$('#newTrain').click(function(){
 		trainName = $('#trainName-input').val().trim();
-		console.log('Train Name: ', trainName);
-		$('#trainName-input').val("");
+			console.log('Train Name: ', trainName);
+			$('#trainName-input').val("");
 		destination = $('#destination-input').val().trim();
-		console.log('Destination: ', destination);
-		$('#destination-input').val("");
+			console.log('Destination: ', destination);
+			$('#destination-input').val("");
 		startTime = $('#startTime-input').val();
-		console.log('Start Time: ', startTime);
-		$('#startTime-input').val("");
+			console.log('Start Time: ', startTime);
+			$('#startTime-input').val("");
 		trips = $('#trips-input').val();
 			console.log('Trips: ', trips);
-		$('#trips-input').val("");
+			$('#trips-input').val("");
 		frequency = $('#frequency-input').val();
-		console.log('Frequency: ', frequency);
-		$('#frequency-input').val("");
+			console.log('Frequency: ', frequency);
+			$('#frequency-input').val("");
 
-		firebase.database().ref().push({
+// ?????????????
+		function trainTimes() {
+			var trainAr = moment(startTime, "HH:mm", true).creationData();
+			var trainArrival = trainAr.input;
+			trainArrivals.push(trainArrival);
+
+			
+			for(var i = 2; i <= trips; i++) {
+				var nextTrainTime = trainArrivals[trainArrivals.length-1];
+				var nextTime = moment(nextTrainTime, 'HH:mm').add(frequency, 'minutes').format('HH:mm');
+				trainArrivals.push(nextTime);
+				console.log('Train Times: ', trainArrivals);
+			}
+
+		}
+
+		trainTimes();
+
+
+		database.ref().push({
 			trainName: trainName,
 			destination: destination,
 			startTime: startTime,
 			trips: trips,
-			frequency: frequency
+			frequency: frequency,
+			trainArrivals: trainArrivals
 		})
-	});
 
-  	var today;
-  	var timeNow;
+		trainArrivals = [];
+	
+	})
+
+	var time;
+	var searchTime;
 
 	function currentTime() {
-	  today = new Date();
-	  timeNow = today.toLocaleTimeString();
-	  $('#currentTime').html(timeNow);
-	  t = setTimeout(function() {
-	    currentTime()
-	  }, 1000);
+		var sec = 1;	
+		time = moment().format('HH:mm:ss');
+		searchTime = moment().format('HH:mm');
+			$('#currentTime').html(time);
+			t = setTimeout(function() {
+				currentTime();
+			}, sec * 1000);
+
+			
+		
 	}
-	currentTime();	
-
-	var time = new Date();
-	var hours = time.getHours();
-	console.log('Hour: ',hours);
-	var minutes = time.getMinutes();
-	console.log('Minutes: ', minutes);
+	currentTime(); 
 
 
+// Click '+' to Open Add Train and "x" to Close window
 
-	$('#hamburger').click(function(){
+	$('#add').click(function(){
 		if($('#newTrainSchedule').attr('data-status') === 'hide') {
 			$('#newTrainSchedule').attr('data-status', 'show').css({'visibility': 'visible', 'height': '480px'});
+			$('#symbol').removeClass('fa fa-plus').addClass('fa fa-close');
 		} else {
 			$('#newTrainSchedule').attr('data-status', 'hide').css({'visibility': 'hidden', 'height': '0px'});
+			$('#symbol').removeClass('fa fa-close').addClass('fa fa-plus');
 		}
 	});
 
 });
 
-
-/*var t1 = '12:04'.split(':'), t2 = '3:45'​​​​​​​.split(':');
-var d1 = new​ Date(0, 0, 0, t1[0], t1[1]),
-var d2 = new Date(0, 0, 0, t2[0], t2[1]);
-var diff = new Date(d1 - d2);*/

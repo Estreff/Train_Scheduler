@@ -7,14 +7,17 @@ body {
 }
 
 .header {
-	height: 10vh;
+	background-color: #dff0d8;
+
 }
 
 .header h1 {
-	margin:0px;
-	font-size: 6vh;
+	color:#5f8847;
+	font-size: 6vw;
 	line-height: 0px;
-	padding-bottom:40px;
+	margin:0px;
+	padding-bottom:0px;
+
 }
 
 #clock {
@@ -25,12 +28,16 @@ body {
 	float: left;
 }
 
-#hamburger {
+#add {
 	text-align: right;
 }
 
 label {
 	margin-top: 20px;
+}
+
+#timeFormat {
+	font-size: 12px;
 }
 
 button {
