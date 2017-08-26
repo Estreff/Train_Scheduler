@@ -53,6 +53,7 @@ button {
 
 div#newTrainSchedule.panel-body{
 	height: 0px;
+	max-height: 400px;
 	visibility: hidden;
 	padding: 0px 15px 0px 15px;
 }
