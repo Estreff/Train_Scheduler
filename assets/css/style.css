@@ -13,11 +13,16 @@ body {
 
 .header h1 {
 	color:#5f8847;
-	font-size: 6vw;
+	font-size: 5vw;
 	line-height: 0px;
 	margin:0px;
 	padding-bottom:0px;
 
+}
+
+#icon {
+	float: left;
+	padding:0;
 }
 
 #clock {
@@ -26,10 +31,12 @@ body {
 
 #addTitle {
 	float: left;
+	padding:0px;
 }
 
 #add {
 	text-align: right;
+	padding:0;
 }
 
 label {
@@ -44,13 +51,15 @@ button {
 	margin-top: 20px;
 }
 
-#newTrainSchedule {
-	visibility: hidden;
+div#newTrainSchedule.panel-body{
 	height: 0px;
+	visibility: hidden;
+	padding: 0px 15px 0px 15px;
 }
 
 .newTrainInput {
 	padding:0px;
+
 }
 
 #newTrain {

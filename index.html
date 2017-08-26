@@ -20,7 +20,7 @@
 		<div class="row">
 			<div class="panel panel-success">
 				  <div class="panel-heading col-md-12">
-				  	<h4 class="col-md-6"><i class = "fa fa-train fa-lg">   </i> Train Schedule</h4>
+				  	<h4 class="col-md-6" id="icon"><i class = "fa fa-train fa-lg"></i>    Train Schedule</h4>
 				  	<h4 class="col-md-6" id="clock"><span id = "currentTime"></span></h4>
 				  </div>
 				  <div class="panel-body">
@@ -29,7 +29,6 @@
 				  			<tr>
 				  				<th>Train Name</th>
 				  				<th>Destination</th>
-				  				<th>First Train</th>
 				  				<th>Frequency (min.)</th>
 				  				<th>Next Arrival</th>
 				  				<th>Minutes Away</th>
@@ -64,10 +63,7 @@
 							<input type="text" class="form-control" id="destination-input">
 						
 							<label for="Start Time">First Train Arrival: <span id= timeFormat>(Time Format HH:MM)</span></label>
-							<input type="time" class="form-control" id="startTime-input" >
-
-							<label for="Trips"># of Trips: </label>
-							<input type="number" class="form-control" id="trips-input" >
+							<input type="text" class="form-control" id="startTime-input" >
 						
 							<label for="Frequency">Frequency:</label>
 							<input type="number" class="form-control" id="frequency-input">

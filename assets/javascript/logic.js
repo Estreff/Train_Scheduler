@@ -12,110 +12,50 @@ $(function(){
 
   	firebase.initializeApp(config);
 
-  	var database = firebase.database();
+  	var trainData = firebase.database();
 
-	database.ref().on('child_added',function(snapshot){
-		var tr = $('<tr>')
-		$('#schedule').append(tr);
-		tr.append('<td id = "train">' + snapshot.val().trainName +'</td>');
-		tr.append('<td id = "destination">' + snapshot.val().destination +'</td>');
-		tr.append('<td id = "startTime">' + snapshot.val().startTime +'</td>');
-		tr.append('<td id = "frequency">' + snapshot.val().frequency +'</td>');
-		// tr.append('<td>' + snapshot.val().trainArrivals[0] +'</td>');
-
-
-		for(var i = 0; i < snapshot.val().trainArrivals.length; i++) {
-			if(snapshot.val().trainArrivals[i] > (searchTime)) {
-				var nextArrival = snapshot.val().trainArrivals[i];
-				tr.append('<td id = "nextArrival">' + snapshot.val().trainArrivals[i] +'</td>');
-				
-				break;		
-			}
-		}
-
-		// var difference = moment(currentTime) - moment(nextArrival);
-		// console.log(difference);			
-
-		
-				
-	});
-
-
-  	var trainName = "";
-  	var destination = "";
-  	var startTime;
-  	var trainTime;
-  	var trips = 0;
-  	var	frequency = 0;
-	var trainArrivals = []
-	
-	$('#newTrain').click(function(){
-		trainName = $('#trainName-input').val().trim();
-			console.log('Train Name: ', trainName);
-			$('#trainName-input').val("");
-		destination = $('#destination-input').val().trim();
-			console.log('Destination: ', destination);
-			$('#destination-input').val("");
-		startTime = $('#startTime-input').val();
-			console.log('Start Time: ', startTime);
-			$('#startTime-input').val("");
-		trips = $('#trips-input').val();
-			console.log('Trips: ', trips);
-			$('#trips-input').val("");
-		frequency = $('#frequency-input').val();
-			console.log('Frequency: ', frequency);
-			$('#frequency-input').val("");
-
-// ?????????????
-		function trainTimes() {
-			var trainAr = moment(startTime, "HH:mm", true).creationData();
-			var trainArrival = trainAr.input;
-			trainArrivals.push(trainArrival);
+  	$('#newTrain').click(function(){
+		var trainName = $('#trainName-input').val().trim();
+		var destination = $('#destination-input').val().trim();
+		var startTime = moment($('#startTime-input').val().trim(), 'HH:mm').subtract(10,'years').format('X');
+		var frequency = $('#frequency-input').val();
 
 			
-			for(var i = 2; i <= trips; i++) {
-				var nextTrainTime = trainArrivals[trainArrivals.length-1];
-				var nextTime = moment(nextTrainTime, 'HH:mm').add(frequency, 'minutes').format('HH:mm');
-				trainArrivals.push(nextTime);
-				console.log('Train Times: ', trainArrivals);
-			}
 
-		}
-
-		trainTimes();
-
-
-		database.ref().push({
-			trainName: trainName,
+		var newTrain = {
+			name: trainName,
 			destination: destination,
 			startTime: startTime,
-			trips: trips,
-			frequency: frequency,
-			trainArrivals: trainArrivals
-		})
+			frequency: frequency
+		}
 
-		trainArrivals = [];
-	
+		trainData.ref().push(newTrain);
+
+			alert('Train Added!!!');
+
+			$('#trainName-input').val("");
+			$('#destination-input').val("");
+			$('#startTime-input').val("");
+			$('#frequency-input').val("");
 	})
 
-	var time;
-	var searchTime;
+		trainData.ref().on('child_added', function(snapshot){
+			var trainName = snapshot.val().name; 
+			var destination = snapshot.val().destination; 
+			var frequency = snapshot.val().frequency; 
+			var startTime = snapshot.val().startTime; 
 
-	function currentTime() {
-		var sec = 1;	
-		time = moment().format('HH:mm:ss');
-		searchTime = moment().format('HH:mm');
-			$('#currentTime').html(time);
-			t = setTimeout(function() {
-				currentTime();
-			}, sec * 1000);
+			var remainder = moment().diff(moment.unix(startTime),"minutes")%frequency;
+			var minutes = frequency - remainder;
+			var arrival = moment().add(minutes,'m').format('hh:mm A');
 
-			
-		
-	}
-	currentTime(); 
+			console.log('Start Time: ', startTime);
+			console.log('Remainder: ', remainder);
+			console.log('Minutes: ', minutes);
+			console.log('Arrival: ',arrival);
 
-
+			$('#schedule').append(`<tr><td>${trainName}</td><td>${destination}</td><td>${frequency}</td><td>${arrival}</td><td>${minutes}</td>`)
+		})	
 // Click '+' to Open Add Train and "x" to Close window
 
 	$('#add').click(function(){
@@ -127,6 +67,16 @@ $(function(){
 			$('#symbol').removeClass('fa fa-close').addClass('fa fa-plus');
 		}
 	});
+// Clock showing on the right side of schedule 
+	function currentTime() {
+		var sec = 1;	
+		time = moment().format('HH:mm:ss');
+		searchTime = moment().format('HH:mm');
+			$('#currentTime').html(time);
 
+			t = setTimeout(function() {
+				currentTime();
+			}, sec * 1000);	
+	}
+	currentTime(); 
 });
-
